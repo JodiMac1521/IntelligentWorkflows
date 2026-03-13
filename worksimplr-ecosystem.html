@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkSimplr Sprint-tern Community Ecosystem</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0f0f1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 48px 24px 24px;
+    position: relative;
+  }
+  .header h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6C63FF, #48cfad, #ffce54);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
+  }
+  .header .subtitle {
+    font-size: 1rem;
+    color: #8888aa;
+    margin-top: 8px;
+    font-weight: 300;
+  }
+
+  /* MAIN TIMELINE */
+  .timeline-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 24px 60px;
+    position: relative;
+  }
+
+  /* Horizontal flow arrow */
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 0 auto 36px;
+    max-width: 900px;
+    position: relative;
+  }
+  .flow-stage {
+    flex: 1;
+    text-align: center;
+    padding: 14px 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 2;
+  }
+  .flow-stage.school { background: linear-gradient(135deg, #6C63FF, #5a54e0); color: #fff; }
+  .flow-stage.sprint { background: linear-gradient(135deg, #48cfad, #38b296); color: #fff; }
+  .flow-stage.alumni { background: linear-gradient(135deg, #ffce54, #f0b429); color: #1a1a2e; }
+  .flow-stage.career { background: linear-gradient(135deg, #fc6e51, #e84f3a); color: #fff; }
+
+  .flow-connector {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.15), rgba(255,255,255,0.35));
+    position: relative;
+    flex-shrink: 0;
+  }
+  .flow-connector::after {
+    content: '\25B6';
+    position: absolute;
+    right: -6px;
+    top: -8px;
+    color: rgba(255,255,255,0.4);
+    font-size: 0.7rem;
+  }
+
+  /* SECTION GRID */
+  .sections-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-top: 12px;
+  }
+
+  .section-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .section-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.15);
+  }
+  .section-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .section-card.purple::before { background: linear-gradient(90deg, #6C63FF, #a78bfa); }
+  .section-card.green::before { background: linear-gradient(90deg, #48cfad, #6ee7b7); }
+  .section-card.gold::before { background: linear-gradient(90deg, #ffce54, #fbbf24); }
+  .section-card.coral::before { background: linear-gradient(90deg, #fc6e51, #f87171); }
+  .section-card.blue::before { background: linear-gradient(90deg, #4fc1e9, #38bdf8); }
+  .section-card.pink::before { background: linear-gradient(90deg, #ec87c0, #f472b6); }
+
+  .section-card h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-card .icon { font-size: 1.3rem; }
+  .section-card .desc {
+    font-size: 0.8rem;
+    color: #8888aa;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .item-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .item-list li {
+    font-size: 0.82rem;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.45;
+  }
+  .item-list li .bullet {
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-top: 5px;
+  }
+  .purple .bullet { background: #6C63FF; }
+  .green .bullet { background: #48cfad; }
+  .gold .bullet { background: #ffce54; }
+  .coral .bullet { background: #fc6e51; }
+  .blue .bullet { background: #4fc1e9; }
+  .pink .bullet { background: #ec87c0; }
+
+  /* FULL WIDTH CARDS */
+  .full-width {
+    grid-column: 1 / -1;
+  }
+
+  /* DATA FLYWHEEL */
+  .flywheel {
+    grid-column: 1 / -1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .flywheel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #6C63FF, #48cfad, #ffce54, #fc6e51);
+  }
+  .flywheel h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .flywheel .desc {
+    font-size: 0.8rem; color: #8888aa; margin-bottom: 20px; line-height: 1.5;
+  }
+
+  .flywheel-ring {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    max-width: 800px;
+  }
+  .flywheel-node {
+    text-align: center;
+    padding: 16px 14px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    flex: 1;
+    min-width: 130px;
+    max-width: 170px;
+  }
+  .flywheel-node .metric-icon { font-size: 1.4rem; margin-bottom: 6px; }
+  .flywheel-node .metric-label { font-size: 0.75rem; font-weight: 600; color: #ccc; }
+  .flywheel-node .metric-detail { font-size: 0.68rem; color: #777; margin-top: 3px; }
+
+  .flywheel-arrow {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.25);
+    padding: 0 4px;
+    flex-shrink: 0;
+  }
+
+  /* NFP PARTNERS */
+  .partners-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .partner-badge {
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.78rem;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 140px;
+  }
+  .partner-badge .org { color: #e0e0e0; }
+  .partner-badge .role { color: #8888aa; font-weight: 400; font-size: 0.7rem; }
+
+  /* VISION BANNER */
+  .vision-banner {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(72,207,173,0.15));
+    border: 1px solid rgba(108,99,255,0.25);
+    border-radius: 16px;
+    padding: 28px 32px;
+    text-align: center;
+  }
+  .vision-banner h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    justify-content: center;
+  }
+  .vision-banner p {
+    font-size: 0.85rem;
+    color: #aaa;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .sections-grid { grid-template-columns: 1fr; }
+    .flow-arrow { flex-wrap: wrap; gap: 8px; }
+    .flow-connector { display: none; }
+    .header h1 { font-size: 1.6rem; }
+    .flywheel-ring { flex-direction: column; align-items: center; }
+    .flywheel-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>WorkSimplr Sprint-tern Ecosystem</h1>
+  <p class="subtitle">A continuous community from classroom to career &mdash; collecting impact data at every stage</p>
+</div>
+
+<div class="timeline-container">
+
+  <!-- JOURNEY FLOW -->
+  <div class="flow-arrow">
+    <div class="flow-stage school">IN SCHOOL<br><span style="font-weight:400;font-size:0.7rem">Earn &amp; Learn</span></div>
+    <div class="flow-connector"></div>
+    <div class="flow-stage sprint">SPRINT-TERN<br><span style="font-weight:400;font-size:0.7rem">Work Experience</span></div>
+    <div class="flow-connector"></div>
+    <div class="flow-stage alumni">ALUMNI COMMUNITY<br><span style="font-weight:400;font-size:0.7rem">Lifelong Network</span></div>
+    <div class="flow-connector"></div>
+    <div class="flow-stage career">CAREER GROWTH<br><span style="font-weight:400;font-size:0.7rem">Economic Mobility</span></div>
+  </div>
+
+  <div class="sections-grid">
+
+    <!-- PHASE 1: IN-SCHOOL SPRINT-TERN -->
+    <div class="section-card purple">
+      <h2><span class="icon">&#127891;</span> Phase 1 &mdash; Work While in School</h2>
+      <p class="desc">Students start Sprint-terns during their academic journey, gaining real work experience alongside coursework.</p>
+      <ul class="item-list">
+        <li><span class="bullet"></span>Short-burst project work (2-6 week sprints) with real employers</li>
+        <li><span class="bullet"></span>Skill-matched assignments aligned to degree program</li>
+        <li><span class="bullet"></span>W-9 onboarding &amp; tax fundamentals workshop (1099 basics)</li>
+        <li><span class="bullet"></span>Professional profile &amp; digital portfolio creation</li>
+        <li><span class="bullet"></span>Mentorship pairing with industry professionals</li>
+        <li><span class="bullet"></span>Baseline data capture: skills, GPA band, demographic, goals</li>
+      </ul>
+    </div>
+
+    <!-- PHASE 2: ALUMNI COMMUNITY -->
+    <div class="section-card green">
+      <h2><span class="icon">&#129309;</span> Phase 2 &mdash; Alumni Community</h2>
+      <p class="desc">Graduates transition into a lifelong community modeled on university alumni networks, keeping them engaged and supported.</p>
+      <ul class="item-list">
+        <li><span class="bullet"></span>Automatic enrollment upon Sprint-tern completion</li>
+        <li><span class="bullet"></span>Peer networking circles &amp; industry-specific cohorts</li>
+        <li><span class="bullet"></span>Annual check-ins: employment status, salary, satisfaction</li>
+        <li><span class="bullet"></span>Alumni spotlight stories &amp; mentorship "give-back" program</li>
+        <li><span class="bullet"></span>Community forums, Slack/Discord channels, virtual meetups</li>
+        <li><span class="bullet"></span>Referral program: alumni refer new Sprint-terns</li>
+      </ul>
+    </div>
+
+    <!-- LEARNING HUB -->
+    <div class="section-card gold">
+      <h2><span class="icon">&#128218;</span> Learning &amp; Life-Skills Hub</h2>
+      <p class="desc">Curated content that keeps members coming back &mdash; practical knowledge schools rarely teach.</p>
+      <ul class="item-list">
+        <li><span class="bullet"></span><strong>New to Networking:</strong> LinkedIn optimization, cold outreach, informational interviews</li>
+        <li><span class="bullet"></span><strong>W-9 &amp; Taxes:</strong> Filing as a 1099 contractor, deductions, quarterly estimates, W-2 vs 1099</li>
+        <li><span class="bullet"></span><strong>Financial Literacy:</strong> Budgeting, student loans, building credit, saving</li>
+        <li><span class="bullet"></span><strong>Career Navigation:</strong> Negotiating offers, switching industries, upskilling</li>
+        <li><span class="bullet"></span><strong>Free Online Courses:</strong> Curated links to Coursera, edX, Google Certs, HubSpot Academy, freeCodeCamp</li>
+        <li><span class="bullet"></span><strong>AI &amp; Tech Skills:</strong> Prompt engineering, no-code tools, data literacy</li>
+      </ul>
+    </div>
+
+    <!-- JOB TOOLS -->
+    <div class="section-card coral">
+      <h2><span class="icon">&#128188;</span> Career Launchpad &amp; Job Intelligence</h2>
+      <p class="desc">Keep members on top of their careers with real-time labor market data and job board integrations.</p>
+      <ul class="item-list">
+        <li><span class="bullet"></span><strong>Job Board Aggregator:</strong> Handshake, LinkedIn, Indeed, WayUp, RippleMatch</li>
+        <li><span class="bullet"></span><strong>Lightcast Integration:</strong> Real-time labor market analytics, in-demand skills, salary benchmarks by region</li>
+        <li><span class="bullet"></span><strong>Julius AI:</strong> Personalized job-market data visualizations &amp; trend analysis</li>
+        <li><span class="bullet"></span><strong>Skills Gap Alerts:</strong> "Your field is trending toward X &mdash; here's a free course"</li>
+        <li><span class="bullet"></span><strong>Salary Transparency:</strong> Anonymous alumni salary data by role, industry, region</li>
+        <li><span class="bullet"></span><strong>Resume &amp; Interview AI Tools:</strong> Feedback bots, mock interview prep</li>
+      </ul>
+    </div>
+
+    <!-- DATA FLYWHEEL -->
+    <div class="flywheel">
+      <h2><span class="icon">&#128200;</span> Continuous Data Flywheel &mdash; Measuring What Matters</h2>
+      <p class="desc">Every stage generates longitudinal data that proves impact, drives improvement, and attracts partners &amp; funders.</p>
+
+      <div class="flywheel-ring">
+        <div class="flywheel-node">
+          <div class="metric-icon">&#9201;</div>
+          <div class="metric-label">Time to Employment</div>
+          <div class="metric-detail">Days from program end to first job offer</div>
+        </div>
+        <div class="flywheel-arrow">&#10132;</div>
+        <div class="flywheel-node">
+          <div class="metric-icon">&#128176;</div>
+          <div class="metric-label">Salary Range</div>
+          <div class="metric-detail">Starting, 1-yr, 3-yr, 5-yr benchmarks</div>
+        </div>
+        <div class="flywheel-arrow">&#10132;</div>
+        <div class="flywheel-node">
+          <div class="metric-icon">&#127942;</div>
+          <div class="metric-label">Skills Acquired</div>
+          <div class="metric-detail">Technical, soft, certifications earned</div>
+        </div>
+        <div class="flywheel-arrow">&#10132;</div>
+        <div class="flywheel-node">
+          <div class="metric-icon">&#128640;</div>
+          <div class="metric-label">Economic Mobility</div>
+          <div class="metric-detail">Income quintile movement over time</div>
+        </div>
+        <div class="flywheel-arrow">&#10132;</div>
+        <div class="flywheel-node">
+          <div class="metric-icon">&#128202;</div>
+          <div class="metric-label">Program ROI</div>
+          <div class="metric-detail">Impact per dollar for funders &amp; partners</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NFP INTERFACES -->
+    <div class="section-card blue full-width">
+      <h2><span class="icon">&#127758;</span> Nonprofit &amp; Industry Partner Interfaces</h2>
+      <p class="desc">Strategic alignment with national organizations to ensure standards, credibility, research, and reach.</p>
+      <div class="partners-row">
+        <div class="partner-badge">
+          <span class="org">NACE &mdash; nace.org</span>
+          <span class="role">National Assoc. of Colleges &amp; Employers: Competency frameworks, employer best practices, first-destination survey alignment, career-readiness standards</span>
+        </div>
+        <div class="partner-badge">
+          <span class="org">ASA &mdash; americanstaffing.net</span>
+          <span class="role">American Staffing Association: Staffing industry standards, legal/compliance guidance, workforce solutions research, credentialing</span>
+        </div>
+        <div class="partner-badge">
+          <span class="org">JFF &mdash; jff.org</span>
+          <span class="role">Jobs for the Future: Economic advancement research, equitable workforce policy, skills-based hiring advocacy, funder network access</span>
+        </div>
+      </div>
+      <ul class="item-list" style="margin-top:16px;">
+        <li><span class="bullet"></span><strong>Data Sharing:</strong> Aggregate anonymized outcomes data aligned to NACE first-destination survey &amp; JFF impact metrics</li>
+        <li><span class="bullet"></span><strong>Standards Alignment:</strong> Sprint-tern competency model mapped to NACE Career Readiness framework</li>
+        <li><span class="bullet"></span><strong>Research Collaboration:</strong> Joint studies on gig-to-career pipelines, skills-based hiring, and economic mobility</li>
+        <li><span class="bullet"></span><strong>Policy Advocacy:</strong> Partner with JFF on workforce policy; leverage ASA for staffing compliance</li>
+      </ul>
+    </div>
+
+    <!-- RETENTION ENGINE -->
+    <div class="section-card pink full-width">
+      <h2><span class="icon">&#128161;</span> Why They Stay &mdash; Retention &amp; Engagement Engine</h2>
+      <p class="desc">Incentives and value that keep Sprint-tern alumni actively engaged long after graduation.</p>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+        <div style="background:rgba(255,255,255,0.04);padding:14px;border-radius:10px;">
+          <div style="font-weight:600;font-size:0.82rem;margin-bottom:4px;">&#127919; Personalized Dashboards</div>
+          <div style="font-size:0.72rem;color:#999;">Career progress tracker, skills radar, salary benchmarking vs. peers</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);padding:14px;border-radius:10px;">
+          <div style="font-weight:600;font-size:0.82rem;margin-bottom:4px;">&#128274; Exclusive Job Listings</div>
+          <div style="font-size:0.72rem;color:#999;">Alumni-only employer postings &amp; early access to Sprint-tern employer openings</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);padding:14px;border-radius:10px;">
+          <div style="font-weight:600;font-size:0.82rem;margin-bottom:4px;">&#127891; Free Course Library</div>
+          <div style="font-size:0.72rem;color:#999;">Aggregated best-of from Coursera, edX, Khan Academy, Google, LinkedIn Learning (free tiers)</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);padding:14px;border-radius:10px;">
+          <div style="font-weight:600;font-size:0.82rem;margin-bottom:4px;">&#128170; Micro-Credentials</div>
+          <div style="font-size:0.72rem;color:#999;">Digital badges for community participation, mentoring, course completion</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);padding:14px;border-radius:10px;">
+          <div style="font-weight:600;font-size:0.82rem;margin-bottom:4px;">&#128172; Live Events</div>
+          <div style="font-size:0.72rem;color:#999;">Monthly webinars, tax season workshops, career fairs, AMA with employers</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);padding:14px;border-radius:10px;">
+          <div style="font-weight:600;font-size:0.82rem;margin-bottom:4px;">&#128200; Labor Market Pulse</div>
+          <div style="font-size:0.72rem;color:#999;">Monthly Lightcast/Julius-powered digest: hot jobs, rising skills, salary shifts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISION -->
+    <div class="vision-banner">
+      <h2><span class="icon">&#128301;</span> The Vision</h2>
+      <p>Build the most comprehensive longitudinal dataset on early-career economic mobility &mdash; from first Sprint-tern to mid-career &mdash; while creating a self-sustaining community where every member gains tangible career value. WorkSimplr becomes the infrastructure layer connecting students, employers, educators, and policymakers with real outcomes data that drives equitable workforce development.</p>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
